@@ -3,7 +3,7 @@ Hello, I will explain how to scrap the web banking API, but I use the moota API.
 Okeyy, it's the tutorial time ... ^ - ^
 
 You must create an account on the moota platform, click <a href="https://moota.co/" target="__blank">https://moota.co/</a>.
-After you create an account, you will be directed to the Moota dashboard. After that, register your bank account by clicking 'Add Bank Account'. And will be directed to the form to fill in your bank account. To be able to add your bank account, you must first buy points or you can use the 'NEWUSER' promo code for new moota users. But the moota API cannot display your account balance and transfer when you first register your bank account. The Moota will display your account balance and transfer when you make a transaction.
+After you create an account, you will be directed to the Moota dashboard. After that, register your bank account by clicking 'Add Bank Account'. And will be directed to the form to fill in your bank account. To be able to add your bank account, you must first buy points or you can use the 'NEWUSER' promo code for new moota users. But the moota API cannot display your account balance and mutation when you first register your bank account. The Moota will display your account balance and mutation when you make a transaction.
 
 After you have finished registering your bank account, it's time we use the moota API click <a href="https://app.moota.co/developer/docs" target="__blank">https://app.moota.co/developer/docs</a>. Okay, this time we will display account balances and mutations.
 
@@ -49,6 +49,7 @@ Next we will make 2 menu choices:
 1. Balance Check
 2. Mutation Check
 
+the code is like this
 ```json
 def menu():
     menu = ["Balance Check","Mutation Check"]
@@ -65,3 +66,82 @@ def menu():
         else:
             print("Invalid choice. Try again")
 ```
+
+Next we create a function to display account balances. The code is like this
+```json
+def balance_check(c_balance):
+    data = json.loads(c_balance.text)
+    for d in data['data']:
+        del d['account_number']
+        del d['date']
+        del d['description']
+        del d['amount']
+        del d['type']
+        del d['note']
+        del d['created_at']
+        del d['mutation_id']
+    j = json.dumps(data['data'][0], indent = 2)
+    print()
+    print(j)
+    
+    back_to_menu()
+```
+
+So the function above accepts the parameter from the response and I use the mutation endpoint, and because in moota there is no endpoint to display the account balance. So I use a mutation endpoint, because there is a key account balance. So the function above only shows the account balance.
+
+The next function is to display mutations. The code is like this
+```json
+def mutation_check(mutation_tm):
+    data = json.loads(mutation_tm.text)
+    array_mutation = []
+    frm = input('From in YYYY-MM-DD format : ')
+    year, month, day = map(int, frm.split('-'))
+    date_from = datetime.date(year, month, day)
+    to = input('To in YYYY-MM-DD format : ')
+    year, month, day = map(int, to.split('-'))
+    date_to = datetime.date(year, month, day)
+    for i in range(len(data['data'])):
+        get_date = json.dumps(data['data'][i]['date'])
+        get_date_str = get_date[1:11]
+        date_time_obj = datetime.datetime.strptime(get_date_str, '%Y-%m-%d')
+        if date_from <= date_time_obj.date() <= date_to:
+            array_mutation.append(data['data'][i])
+            
+    if array_mutation != []:
+        filtered_mutation = json.dumps(array_mutation, indent = 2)
+        print()
+        print(filtered_mutation)
+    else:
+        print()
+        print("There are no transactions in the date range entered")
+        
+    back_to_menu()
+```
+
+Because the moota API does not provide date parameters to display mutations based on the date range. So I use key date to be compared to the variables that I made from date and to date. And if the condition of the date range is correct, it will be filtered into an array of mutations.
+
+
+Finally I made the back_to_menu function. The code is like this
+```json
+def back_to_menu():
+    while True:
+        print()
+        try_again = input("Back to menu ? (y/n): ")
+        if try_again == 'y' or try_again == 'Y':
+            menu()
+            break
+        elif try_again == 'n' or try_again == 'N':
+            break
+        else:
+            print("Invalid choice. Try again")    
+```
+Output:
+##Check account balance
+<img src="output/1.JPG"><br/>
+<img src="output/2.JPG"><br/>
+
+
+##Check mutations
+<img src="output/3.JPG"><br/>
+<img src="output/4.JPG"><br/>
+<img src="output/5.JPG">
