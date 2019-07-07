@@ -21,8 +21,8 @@ And for how to use the following:
 import requests
 
 headers = {
-    'Accept': 'application/json',
-    'Authorization': 'Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx',
+    "Accept': 'application/json",
+    "Authorization': 'Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx",
 }
 
 response = requests.get('https://app.moota.co/api/v1/balance', headers=headers)
@@ -34,8 +34,8 @@ Okay, because we want to display the account balance, we must use API / v1 / ban
 import requests
 
 headers = {
-    'Accept': 'application/json',
-    'Authorization': 'Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx',
+    "Accept': 'application/json",
+    "Authorization': 'Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx",
 }
 
 response = requests.get('https://app.moota.co/api/v1/bank/{bank_id}/mutation/', headers=headers)
@@ -51,7 +51,7 @@ Next we will make 2 menu choices:
 
 ```json
 def menu():
-    menu = ['Balance Check','Mutation Check']
+    menu = ["Balance Check","Mutation Check"]
     for i in range(len(menu)):
         print("%d. %s"%(i+1, menu[i]))
     while True:
