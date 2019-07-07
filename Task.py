@@ -1,13 +1,22 @@
+'''
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -> api_toke
+Token bisa Anda dapatkan di halaman Settings web Moota.
+
+
+{bank_id}
+ID Akun Bank anda. Untuk mendapatkan ID, silahkan akses ENDPOINT api/v1/bank terlebih dahulu.
+'''
+
 import requests
 import json
 import datetime
 
 headers = {
     'Accept': 'application/json',
-    'Authorization': 'Bearer mGX0WDL8CwgmGIZE7iwfXos9StB9mVvwPbkSNlYeSxTpk0uEcC',
+    'Authorization': 'Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
 }
 
-get_api_moota = requests.get('https://app.moota.co/api/v1/bank/NylzrB9Ezxb/mutation', headers = headers)
+get_api_moota = requests.get('https://app.moota.co/api/v1/bank/{bank_id}/mutation', headers = headers)
 
 def menu():
     menu = ['Balance Check','Mutation Check']

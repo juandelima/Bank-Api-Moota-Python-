@@ -135,13 +135,13 @@ def back_to_menu():
         else:
             print("Invalid choice. Try again")    
 ```
-Output:
-##Check account balance
+Output:<br/>
+## Check account balance
 <img src="output/1.JPG"><br/>
 <img src="output/2.JPG"><br/>
 
 
-##Check mutations
+## Check mutations
 <img src="output/3.JPG"><br/>
 <img src="output/4.JPG"><br/>
 <img src="output/5.JPG">
