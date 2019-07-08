@@ -135,10 +135,75 @@ def back_to_menu():
         else:
             print("Invalid choice. Try again")    
 ```
+
+oupsss, I almost forgot, I want to add the last mutation feature, when selecting the check mutation menu, there are 2 choices:
+1. Based on date range<br/>
+2. Last mutation<br/>
+
+add the 'last' variable to take the last mutation, like this
+```json
+last = requests.get('https://app.moota.co/api/v1/bank/{bank_id}/mutation/recent', headers = headers)
+```
+
+The code is like this
+```json
+def mutation_check(get_api_moota, last):
+    menu = ['Based on date range','Last mutation']
+    print()
+    for i in range(len(menu)):
+        print("%d. %s"%(i+1, menu[i]))
+    while True:
+        menu = input("Select menu [1 - 2]: ")
+        if menu == '1':
+            date_range(get_api_moota)
+            break
+        elif menu == '2':
+            last_month(last)
+            break
+        else:
+            print("Invalid choice. Try again")
+            
+def date_range(mutation_tm):
+    data = json.loads(mutation_tm.text)
+    array_mutation = []
+    while True:        
+        frm = input('From in YYYY-MM-DD format : ')
+        to = input('To in YYYY-MM-DD format : ')
+        if len(frm) == 10 and len(to) == 10:            
+            year, month, day = map(int, frm.split('-'))
+            date_from = datetime.date(year, month, day)
+            year, month, day = map(int, to.split('-'))
+            date_to = datetime.date(year, month, day)
+            break
+        else:
+            print("Incorrect date format. Try again!")
+            
+    for i in range(len(data['data'])):
+        get_date = json.dumps(data['data'][i]['date'])
+        get_date_str = get_date[1:11]
+        date_time_obj = datetime.datetime.strptime(get_date_str, '%Y-%m-%d')
+        if date_from <= date_time_obj.date() <= date_to:
+            array_mutation.append(data['data'][i])
+            
+    if array_mutation != []:
+        filtered_mutation = json.dumps(array_mutation, indent = 2)
+        print()
+        print(filtered_mutation)
+    else:
+        print()
+        print("There are no transactions in the date range entered")
+        
+    back_to_menu()
+
+def last_month(mutation_last):
+    data = json.loads(mutation_last.text)
+    j = json.dumps(data, indent = 2)
+    print(j)
+    back_to_menu()  
+```
 Output:<br/>
 ## Check account balance
 <img src="output/1.JPG"><br/>
-<img src="output/2.JPG"><br/>
 
 
 ## Check mutations

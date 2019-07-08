@@ -13,10 +13,11 @@ import datetime
 
 headers = {
     'Accept': 'application/json',
-    'Authorization': 'Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    'Authorization': 'Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
 }
 
 get_api_moota = requests.get('https://app.moota.co/api/v1/bank/{bank_id}/mutation', headers = headers)
+last = requests.get('https://app.moota.co/api/v1/bank/{bank_id}/mutation/recent', headers = headers)
 
 def menu():
     menu = ['Balance Check','Mutation Check']
@@ -28,7 +29,7 @@ def menu():
             balance_check(get_api_moota)
             break
         elif menu == '2':
-            mutation_check(get_api_moota)
+            mutation_check(get_api_moota, last)
             break
         else:
             print("Invalid choice. Try again")
@@ -62,15 +63,38 @@ def balance_check(c_balance):
     
     back_to_menu()
 
-def mutation_check(mutation_tm):
+
+def mutation_check(get_api_moota, last):
+    menu = ['Based on date range','Last mutation']
+    print()
+    for i in range(len(menu)):
+        print("%d. %s"%(i+1, menu[i]))
+    while True:
+        menu = input("Select menu [1 - 2]: ")
+        if menu == '1':
+            date_range(get_api_moota)
+            break
+        elif menu == '2':
+            last_month(last)
+            break
+        else:
+            print("Invalid choice. Try again")
+            
+def date_range(mutation_tm):
     data = json.loads(mutation_tm.text)
     array_mutation = []
-    frm = input('From in YYYY-MM-DD format : ')
-    year, month, day = map(int, frm.split('-'))
-    date_from = datetime.date(year, month, day)
-    to = input('To in YYYY-MM-DD format : ')
-    year, month, day = map(int, to.split('-'))
-    date_to = datetime.date(year, month, day)
+    while True:        
+        frm = input('From in YYYY-MM-DD format : ')
+        to = input('To in YYYY-MM-DD format : ')
+        if len(frm) == 10 and len(to) == 10:            
+            year, month, day = map(int, frm.split('-'))
+            date_from = datetime.date(year, month, day)
+            year, month, day = map(int, to.split('-'))
+            date_to = datetime.date(year, month, day)
+            break
+        else:
+            print("Incorrect date format. Try again!")
+            
     for i in range(len(data['data'])):
         get_date = json.dumps(data['data'][i]['date'])
         get_date_str = get_date[1:11]
@@ -87,7 +111,12 @@ def mutation_check(mutation_tm):
         print("There are no transactions in the date range entered")
         
     back_to_menu()
-    
+
+def last_month(mutation_last):
+    data = json.loads(mutation_last.text)
+    j = json.dumps(data, indent = 2)
+    print(j)
+    back_to_menu()
 
 if __name__ == '__main__':
     menu()
